@@ -21,9 +21,8 @@ const Cliente = mongoose.model('Cliente', ClienteSchema)
 async function create(clientBody) {
   const emailEncontrado = await Cliente.findOne({ email: clientBody.email })
   if (emailEncontrado) {
-    const { name, email, telefone, consentimento } = emailEncontrado
-
-    return { name, email, telefone, consentimento }
+    await Cliente.updateOne({ _id: emailEncontrado.id }, { ...clientBody })
+    return { ...clientBody }
   }
 
   const clienteCriado = await Cliente.create(clientBody)

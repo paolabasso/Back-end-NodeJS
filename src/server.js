@@ -1,27 +1,15 @@
 require('dotenv/config')
+const cors = require('cors')
 const express = require('express')
 const app = express()
 const port = process.env.PORT
-const model = require('./models/cliente')
+const routes = require('./routes')
+
+app.use(cors())
 
 app.use(express.json())
 
-app.get('/', async (request, response) => {
-  const listaDeClientes = await model.listar()
-  response.send(listaDeClientes)
-})
-
-app.post('/', async (request, response) => {
-  console.log(request.body)
-  try {
-    const clienteCriado = await model.create(request.body)
-
-    response.status(201).send(clienteCriado)
-  } catch (error) {
-    console.log(error)
-    response.status(400).send('Ocorreu um erro no cadastro.')
-  }
-})
+app.use(routes)
 
 app.listen(port, () => {
   console.log('O servidor está rodando na porta ' + port)
